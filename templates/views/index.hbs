@@ -4,27 +4,69 @@
     <head>
          <title>Home Page</title>
          <link rel="icon" href="/img/yes.png">
+         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/css/styles.css">
-       
+        
+      
     </head>
-    <body>
+   <body background="/img/weather.jpg">
         <div class="main-content">
          {{>header}}
+
+         <div> &nbsp;</div> 
+ <div> &nbsp;</div> <div> &nbsp;</div> 
+ <img class="center" src = "/img/image1.png"  align="middle"> 
 
          <p> Use this site to get your weather</p>
 
          <form> 
-             <input placeholder="Location"> 
-             <button>Search</button>
+             <br>
+             <input name="place" type="text" class="get-input" placeholder="Enter Location" required>
+              &nbsp;
+             <input type="submit" class="new-button" value="GET WEATHER" onclick="onFunction()">
+             &nbsp;
+             <input type="reset" class="new-button" value="        CLEAR        " onclick="offFunction()">
          </form>
+       
 
-         <p id="message-1"> </p>
-         <p id="message-2"> </p>
+<div> &nbsp;</div>
 
+<div id="magic">
+<p  id="message-1"> </p>
+
+
+<div class="flex-container"> 
+      <div> <p id="message-2"> </p> </div>
+      <div>  <p id="message-3"> </p></div>
+      <div>  <p id="message-4"> </p> </div>
+      <div>   <p id="message-5"> </p></div>
+    </div>
+<div> &nbsp;</div>
+<div class="flex-container">
+     <div>  <p id="message-6"> </p> </div>
+      <div>  <p id="message-7"> </p></div>
+      <div>  <p id="message-8"> </p> </div>
+       <div> <p id="message-9"> </p></div>
+    </div>
+    </div>
+      
         </div>
-            
+           <div> &nbsp;</div> 
+           <div> &nbsp;</div>
         {{>footer}}
          <script src="/js/app.js"> </script>
+         
+    
+    <script>
+            function onFunction() {
+                document.getElementById("magic").style.visibility = "visible";
+           
+            }
+            function offFunction() {
+                document.getElementById("magic").style.visibility = "hidden";
+            }
+    </script>
+    
     </body>
   
 </html>
