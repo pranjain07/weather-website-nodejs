@@ -1,72 +1,203 @@
-<!DOCTYPE html>
-
 <html>
-    <head>
-         <title>Home Page</title>
+  <head>
+         <title>Weather Forecast</title>
+         <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+         <link rel="stylesheet" href="/css/styles.css">  
          <link rel="icon" href="/img/yes.png">
          <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="/css/styles.css">
-        
-      
+         <script type="text/javascript" async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyC8NhQAHXNsXGURm98ePv5VzXbByM-PD-g&libraries=places&callback=initMap"></script>
     </head>
-   <body background="/img/weather.jpg">
-        <div class="main-content">
-         {{>header}}
-
-         <div> &nbsp;</div> 
- <div> &nbsp;</div> <div> &nbsp;</div> 
- <img class="center" src = "/img/image1.png"  align="middle"> 
-
-         <p> Use this site to get your weather</p>
-
-         <form> 
-             <br>
-             <input name="place" type="text" class="get-input" placeholder="Enter Location" required>
-              &nbsp;
-             <input type="submit" class="new-button" value="GET WEATHER" onclick="onFunction()">
-             &nbsp;
-             <input type="reset" class="new-button" value="        CLEAR        " onclick="offFunction()">
-         </form>
-       
-
-<div> &nbsp;</div>
-
-<div id="magic">
-<p  id="message-1"> </p>
-
-
-<div class="flex-container"> 
-      <div> <p id="message-2"> </p> </div>
-      <div>  <p id="message-3"> </p></div>
-      <div>  <p id="message-4"> </p> </div>
-      <div>   <p id="message-5"> </p></div>
-    </div>
-<div> &nbsp;</div>
-<div class="flex-container">
-     <div>  <p id="message-6"> </p> </div>
-      <div>  <p id="message-7"> </p></div>
-      <div>  <p id="message-8"> </p> </div>
-       <div> <p id="message-9"> </p></div>
-    </div>
-    </div>
-      
+    <body>
+          
+        <div class="pac-card" id="pac-card">
+          <div>
+              <div id="title">
+                    <img src="img/image1.png" height="50" width="250" align="middle">
+              </div>
+                
+          </div>
+          <div> 
+             <form> 
+               <input id="address" type="text"  placeholder="Enter a Location" required> <br> <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" id="submit" class="submit-button" value="GET WEATHER" onclick="onFunction()">
+                 &nbsp;
+               <input type="reset" class="reset-button" value="        CLEAR        " onclick="offFunction()">
+               </form>
+          </div>
         </div>
-           <div> &nbsp;</div> 
-           <div> &nbsp;</div>
-        {{>footer}}
-         <script src="/js/app.js"> </script>
-         
-    
-    <script>
+        <div class="pac-card" id="result-card">
+  
+              <form> <br>
+                <textarea style="height:30px; width: 315px;overflow:hidden; align:center; border:2px solid white;" id="message-1" class="message"> </textarea> <br><br>
+                 <textarea style="width: 315px;overflow:hidden; align:center; border:2px solid white;" id="message-2" class="message"> </textarea> </form>
+                    <hr style="width: 315px">
+                    <div class="flex-container">
+                      <div> <img class="icons" src = "/img/temp.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-3"> </p></div>
+                    </div>
+                    <br><br>
+                  
+                  <div class="flex-container">
+                      <div> <img class="icons" src = "/img/rainy.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-4"> </p></div>
+                    </div>
+                   
+                  <br><br>
+                  <div class="flex-container">
+                      <div> <img class="icons" src = "/img/hum.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-5"> </p></div>
+                    </div>
+                   <br><br>
+                  
+                  <div class="flex-container">
+                      <div> <img class="icons" src = "/img/wind.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-6"> </p></div>
+                    </div>
+                    <br><br>
+                 
+                  <div class="flex-container">
+                      <div> <img class="icons" src = "/img/pressure.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-9"> </p></div>
+                    </div>
+                   <br><br>
+                 
+                  <div class="flex-container">
+                      <div> <img class="icons" src = "/img/maxtemp.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-7"> </p></div>
+                    </div>
+                    <br><br>
+                 
+                  <div class="flex-container">
+                      <div> <img class="icons" src = "/img/mintemp.png"  style="float: left">  </div>
+                      <div> <p style=" width: 160px" id="message-8"> </p></div>
+                    </div>
+                  
+                 
+
+        </div>
+
+
+
+        <div id="map"></div>
+        <div id="infowindow-content">
+              <img src="" width="16" height="16" id="place-icon">
+              <span id="place-name"  class="title"></span><br>
+               <span id="place-address"></span>
+        </div>
+
+
+
+
+ <script type="text/javascript">
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -33.8688, lng: 151.2195},
+    zoom: 13
+  });
+  infoWindow = new google.maps.InfoWindow;
+
+  // Try HTML5 geolocation.
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                  var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                  };
+                var marker = new google.maps.Marker({position: pos, map: map});
+                  infoWindow.setPosition(pos);
+                  infoWindow.setContent('You are Here.');
+                  infoWindow.open(map);
+                  map.setCenter(pos);
+                  
+                }, function() {
+                  handleLocationError(true, infoWindow, map.getCenter());
+                });
+              } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, infoWindow, map.getCenter());
+              }
+              var geocoder = new google.maps.Geocoder();
+              
+  var card = document.getElementById('pac-card');
+  var rcard = document.getElementById('result-card');
+  var input = document.getElementById('address');
+  
+
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+  map.controls[google.maps.ControlPosition.LEFT].push(rcard);        
+  
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  
+
+  // Bind the map's bounds (viewport) property to the autocomplete object,
+  // so that the autocomplete requests use the current map bounds for the
+  // bounds option in the request.
+  autocomplete.bindTo('bounds', map);
+  
+
+  // Set the data fields to return when the user selects a place.
+  autocomplete.setFields(
+      ['address_components', 'geometry', 'icon', 'name']);
+
+  var infowindow = new google.maps.InfoWindow();
+  
+  var infowindowContent = document.getElementById('infowindow-content');
+  infowindow.setContent(infowindowContent);
+  var marker = new google.maps.Marker({
+    map: map,
+    anchorPoint: new google.maps.Point(0, -29)
+  });
+
+  autocomplete.addListener('place_changed', function() {
+    infowindow.close();
+    marker.setVisible(false);
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      // User entered the name of a Place that was not suggested and
+      // pressed the Enter key, or the Place Details request failed.
+      window.alert("No details available for input: '" + place.name + "'");
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);  // Why 17? Because it looks good.
+    }
+    marker.setPosition(place.geometry.location);
+    marker.setVisible(true);
+
+    var address = '';
+    if (place.address_components) {
+      address = [
+        (place.address_components[0] && place.address_components[0].short_name || ''),
+        (place.address_components[1] && place.address_components[1].short_name || ''),
+        (place.address_components[2] && place.address_components[2].short_name || '')
+      ].join(' ');
+    }
+
+    infowindowContent.children['place-icon'].src = place.icon;
+    infowindowContent.children['place-name'].textContent = place.name;
+    infowindowContent.children['place-address'].textContent = address;
+    infowindow.open(map, marker);
+  });
+
+  
+}
+
+ </script>
+ <script type="text/javascript">
             function onFunction() {
-                document.getElementById("magic").style.visibility = "visible";
+              
+                document.getElementById("result-card").style.visibility = "visible";
            
             }
             function offFunction() {
-                document.getElementById("magic").style.visibility = "hidden";
+                document.getElementById("result-card").style.visibility = "hidden";
             }
-    </script>
-    
+             </script>
+  <script src="/js/app.js"> </script>
     </body>
-  
 </html>
